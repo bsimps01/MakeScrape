@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/gocolly/colly"
 )
@@ -11,6 +13,21 @@ type Article struct {
 	HEADLINE string `json:"headline"`
 	TITLE    string `json:"title"`
 	LINK     string `json:"link"`
+}
+
+func dataOut(file []byte) {
+	this := ioutil.WriteFile("data.json", file, 0644)
+	if err := this; err != nil {
+		panic(err)
+	}
+}
+
+func serializeJSON(bball []Article) {
+	fmt.Println("Serializing Data")
+	storiesJoined, _ := json.Marshal(bball)
+	dataOut(storiesJoined)
+	fmt.Println("Serializing Complete")
+	fmt.Println(string(storiesJoined))
 }
 
 // main() contains code adapted from example found in Colly's docs:
@@ -43,4 +60,5 @@ func main() {
 
 	// Start scraping on https://hackerspaces.org
 	c.Visit("http://www.mlb.com/")
+	serializeJSON(stories)
 }
